@@ -1,0 +1,39 @@
+{
+    "better-comments.highlightPlainText": true,
+    "[css]": {
+      "editor.foldingStrategy": "indentation"
+    },
+    "css.validate": false,
+    "editor.accessibilitySupport": "off",
+    "editor.codeActionsOnSave": {
+      "addMissingImports": true,
+      "source.fixAll": true,
+      "source.organizeImports": true
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.fontFamily": "'Victor Mono', 'Inconsolata', 'Source Code Pro', Menlo, Monaco, 'Courier New', monospace",
+    "editor.fontLigatures": true,
+    "editor.formatOnSave": true,
+    "editor.minimap.enabled": false,
+    "editor.linkedEditing": true,
+    "editor.smoothScrolling": true,
+    "editor.tabSize": 2,
+    "editor.wordWrap": "wordWrapColumn",
+    "emmet.includeLanguages": {
+      "javascript": "html"
+    },
+    "eslint.workingDirectories": ["./client", "./server"],
+    "files.autoSave": "onFocusChange",
+    "files.eol": "\n",
+    "files.trimTrailingWhitespace": true,
+    "javascript.validate.enable": false,
+    "kite.codefinder.enableLineDecoration": false,
+    "prettier.requireConfig": true,
+    "terminal.integrated.fontFamily": "'Inconsolata', 'Source Code Pro', monospace",
+    "workbench.colorTheme": "Darkula",
+    "workbench.enableExperiments": false,
+    "workbench.iconTheme": "eq-material-theme-icons-darker",
+    "workbench.view.alwaysShowHeaderActions": true,
+    "cSpell.words": ["browserslist"]
+  }
+  
