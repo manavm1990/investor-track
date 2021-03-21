@@ -3,7 +3,9 @@ import { ColorModeSwitcher } from 'ColorModeSwitcher';
 
 const Header = () => (
   <header className="flex justify-between">
-    <Heading fontSize="xl">My Capstone!</Heading>
+    <Heading fontSize="2xl" className="text-green-500">
+      InvestTrack
+    </Heading>
     <ColorModeSwitcher />
   </header>
 );
