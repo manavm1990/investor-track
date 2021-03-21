@@ -1,9 +1,13 @@
+import db from "db";
 import { Router } from "express";
 
 const router = new Router();
 
-router.get("/", (_, res) => {
-  res.send("<h1>Hello Investments GET Route!</h1>");
+// Get all investments for all investors
+router.get("/admin", async (_, res) => {
+  // TODO: ⚠️ Verify identity via Firebase auth ID token JWT
+  const investments = await db.findInvestments();
+  res.json(investments);
 });
 
 export default router;

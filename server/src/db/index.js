@@ -1,6 +1,19 @@
-/**
- * This one would, "import client from './client'",
- * and use that to do the CRUD things.
- *
- * You can 'absolutely import' this - or delete 🔥 if not using.
- */
+import client from "./client";
+
+export default {
+  findInvestments() {
+    return client.connect().then(async () => {
+      try {
+        const cursor = await client.db("investments").collection("data").find();
+        const results = await cursor.toArray();
+
+        return results;
+      } catch (error) {
+        throw new Error(error);
+      } finally {
+        // Close the connection to the MongoDB cluster
+        client.close();
+      }
+    });
+  },
+};
