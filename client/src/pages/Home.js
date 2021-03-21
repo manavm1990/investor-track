@@ -1,8 +1,8 @@
-import { Box, Text } from '@chakra-ui/react';
-
+import { Box } from '@chakra-ui/react';
+import { Card } from 'components';
 const Home = () => (
-  <Box className="bg-center bg-cover bg-hero-image h-96 w-screen">
-    <Text>Hello</Text>
+  <Box className="bg-center bg-cover bg-hero-image flex flex-col justify-center items-center h-96 w-screen">
+    <Card />
   </Box>
 );
 
