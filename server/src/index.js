@@ -1,6 +1,6 @@
+import config from "config";
 import cors from "cors";
 import express from "express";
-import config from "./config";
 import { investments } from "./routes";
 
 const app = express();
