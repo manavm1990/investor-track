@@ -17,6 +17,9 @@ module.exports = {
         ignore: ["api", "config", "db", "lib"],
       },
     ],
+
+    // With 'autofix import' setting - no need!
+    "import/order": 0,
     "import/prefer-default-export": 1,
     "no-debugger": "warn",
     "no-param-reassign": "warn",
