@@ -1,6 +1,7 @@
 import client from "./client";
 
 export default {
+  // TODO: `findInvestmentsAsAdmin`
   findInvestments() {
     return client.connect().then(async () => {
       try {
