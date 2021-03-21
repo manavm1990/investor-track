@@ -8,7 +8,7 @@ import {
   Input,
 } from '@chakra-ui/react';
 import api from 'api';
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { useHistory } from 'react-router-dom';
 
 // state, action (it's from the dispatcher)
@@ -29,8 +29,16 @@ function reducer(state, { type, payload }) {
 
 function LoginRegistrationForm() {
   const [formState, dispatch] = useReducer(reducer, { mode: 'login' });
-
   const history = useHistory();
+
+  useEffect(() => {
+    (async () => {
+      const user = await api.auth.show();
+      if (user) {
+        history.push('/dashboard');
+      }
+    })();
+  }, [history]);
 
   const finishRegistration = async (fname, photo) => {
     try {

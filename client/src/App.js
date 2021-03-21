@@ -1,6 +1,6 @@
 import { Box, ChakraProvider, extendTheme, Grid } from '@chakra-ui/react';
 import Layout from 'layout';
-import { AboutPage, HomePage, LoginPage } from 'pages';
+import { DashboardPage, HomePage } from 'pages';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Fonts } from 'theme';
 import './index.css';
@@ -24,8 +24,8 @@ function App() {
                 <Route exact path="/">
                   <HomePage />
                 </Route>
-                <Route exact path="/about">
-                  <AboutPage />
+                <Route exact path="/dashboard">
+                  <DashboardPage />
                 </Route>
               </Switch>
             </Router>
