@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/manavm1990/node-starter#readme",
   "devDependencies": {
+    "aws4": "^1.11.0",
     "eslint": "^7.22.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^8.1.0",
