@@ -15,7 +15,7 @@ const theme = extendTheme({
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
+      <Box>
         <Grid minH="100vh" p={3}>
           <Layout>
             <Fonts />
