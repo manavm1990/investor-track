@@ -9,7 +9,7 @@ const Footer = () => (
         <Icon as={FaCopyright} />
         {new Date().getFullYear()}
       </Text>
-
+      <Text>InvestTrack</Text>
       {/* TODO: Replace links! */}
       <Link href="https://www.github.com/manavm1990/" isExternal>
         <IconButton aria-label="GitHub" icon={<GoMarkGithub />} size="sm" />
