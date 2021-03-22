@@ -19,6 +19,7 @@ function Dashboard() {
 
   useEffect(() => {
     (async () => {
+      // TODO: 🐛 Review this for the log out crashing!
       const { email } = loggedInUser;
       const resp = await api.db.index({ email });
       setData(() => resp);

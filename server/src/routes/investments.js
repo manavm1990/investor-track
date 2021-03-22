@@ -3,11 +3,18 @@ import { Router } from "express";
 
 const router = new Router();
 
+/**
+ * Handles any GET requests to "/investments/"
+ */
 router.get("/", (_, res) => {
   res.send("<h1>Hello from Investments GET Router</h1>");
 });
 
-// Get all investments for all investors
+/**
+ * We use user's ✉️ to get all of the relevant records from MongoDB
+ * @param{Object}
+ * @returns {[Object]}
+ */
 router.post("/", async ({ body: { email } }, res) => {
   try {
     // TODO: ⚠️ Verify identity via Firebase auth ID token JWT

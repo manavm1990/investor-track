@@ -54,6 +54,8 @@ const api = {
       const resp = await ky
         .post(
           `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`,
+
+          // Request body that we want to send to the server
           { body: fd }
         )
         .json();
@@ -63,13 +65,16 @@ const api = {
   db: {
     /**
      * Get all investments for either a user or for everyone if 'admin.'
-     * @param {Object} user
+     * @param {Object} user - user's ✉️
      * @returns {[Object]}
      */
     async index(user) {
-      console.log(user);
       const resp = await ky
-        .post(`http://localhost:8080/investments`, { json: user })
+        .post(
+          `http://localhost:8080/investments`,
+          // Send user ✉️ JSON as request body
+          { json: user }
+        )
         .json();
 
       return resp;
