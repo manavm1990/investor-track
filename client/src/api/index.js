@@ -60,6 +60,21 @@ const api = {
       return resp;
     },
   },
+  db: {
+    /**
+     * Get all investments for either a user or for everyone if 'admin.'
+     * @param {Object} user
+     * @returns {[Object]}
+     */
+    async index(user) {
+      console.log(user);
+      const resp = await ky
+        .post(`http://localhost:8080/investments`, { json: user })
+        .json();
+
+      return resp;
+    },
+  },
 };
 
 export default api;
