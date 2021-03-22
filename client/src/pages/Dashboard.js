@@ -1,37 +1,25 @@
-import api from 'api';
-import { useEffect, useState } from 'react';
+import { AuthContext } from 'context';
+import { useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
 function Dashboard() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const { loggedInUser } = useContext(AuthContext);
 
   const history = useHistory();
 
   useEffect(() => {
-    (async () => {
-      const user = await api.auth.show();
+    if (!loggedInUser) {
+      history.push('/');
+    }
+  });
 
-      if (user) {
-        setCurrentUser({
-          email: user.email,
-          name: user.displayName,
-          pic: user.photoUrl,
-        });
-      } else {
-        history.push('/');
-      }
-    })();
-  }, [history]);
-
-  return currentUser ? (
+  return (
     <p>
       Hello,&nbsp;
-      {currentUser.email === process.env.REACT_APP_INVESTMENTS_ADMIN
+      {loggedInUser?.email === process.env.REACT_APP_INVESTMENTS_ADMIN
         ? 'Admin'
-        : currentUser.name}
+        : loggedInUser?.name}
     </p>
-  ) : (
-    <></>
   );
 }
 

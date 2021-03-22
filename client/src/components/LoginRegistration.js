@@ -8,7 +8,8 @@ import {
   Input,
 } from '@chakra-ui/react';
 import api from 'api';
-import { useEffect, useReducer } from 'react';
+import { AuthContext } from 'context';
+import { useContext, useEffect, useReducer } from 'react';
 import { useHistory } from 'react-router-dom';
 
 // state, action (it's from the dispatcher)
@@ -30,15 +31,13 @@ function reducer(state, { type, payload }) {
 function LoginRegistrationForm() {
   const [formState, dispatch] = useReducer(reducer, { mode: 'login' });
   const history = useHistory();
+  const { loggedInUser, toggleUser } = useContext(AuthContext);
 
   useEffect(() => {
-    (async () => {
-      const user = await api.auth.show();
-      if (user) {
-        history.push('/dashboard');
-      }
-    })();
-  }, [history]);
+    if (!loggedInUser) {
+      history.push('/');
+    }
+  });
 
   const finishRegistration = async (fname, photo) => {
     try {
@@ -99,14 +98,17 @@ function LoginRegistrationForm() {
 
     switch (formState.mode) {
       case 'login':
-        api.auth
-          .show(submission.email, submission.password)
-          .then(() => {
-            history.push('/dashboard');
-          })
-          .catch(error => {
-            dispatch({ type: 'update-info', payload: error.message });
-          });
+        try {
+          const user = await api.auth.show(
+            submission.email,
+            submission.password
+          );
+          toggleUser(user);
+          history.push('/dashboard');
+        } catch (error) {
+          dispatch({ type: 'update-info', payload: error.message });
+        }
+
         break;
       case 'registration':
         api.auth
