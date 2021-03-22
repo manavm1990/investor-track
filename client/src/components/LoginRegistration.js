@@ -103,6 +103,8 @@ function LoginRegistrationForm() {
             submission.email,
             submission.password
           );
+
+          // Invoked by parent - controlled components pattern (uni-directional)
           toggleUser(user);
           history.push('/dashboard');
         } catch (error) {
