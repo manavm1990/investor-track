@@ -13,7 +13,7 @@ app.use(
   cors(
     // TODO: Update this for production
     // Only allow access from 'localhost'
-    { origin: "http://localhost" }
+    { origin: "http://localhost:3000" }
   )
 );
 
