@@ -24,6 +24,7 @@ module.exports = {
     "no-debugger": "warn",
     "no-param-reassign": "warn",
     "no-plusplus": ["error", { allowForLoopAfterthoughts: true }],
+    "no-process-exit": 1,
     "no-unused-vars": [
       "warn",
       {
@@ -32,7 +33,6 @@ module.exports = {
       },
     ],
     "node/no-missing-import": 1,
-
     "node/no-unsupported-features/es-syntax": [
       "warn",
       {
