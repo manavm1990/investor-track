@@ -6,4 +6,14 @@ const client = new MongoClient(config.mongodbURI, {
   useUnifiedTopology: true,
 });
 
+client.connect();
+
+process.on("SIGINT", () => {
+  client.close().then(() => {
+    console.info("Closing Mongo client");
+  });
+
+  process.exit(0);
+});
+
 export default client;
