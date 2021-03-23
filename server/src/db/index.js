@@ -3,7 +3,7 @@ import client from "./client";
 
 export default {
   /**
-   * Use the ✉️ to find the relevent investment data.
+   * Use the ✉️ to find the relevant investment data.
    * Note 🎵: If this matches the 'env admin,' we get all investments
    * @param {string} user - ✉️
    * @returns {[Object]}
