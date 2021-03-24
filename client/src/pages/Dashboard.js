@@ -1,6 +1,6 @@
 import { Box, Skeleton } from '@chakra-ui/react';
 import api from 'api';
-import { Investment } from 'components';
+import { Form, Investment } from 'components';
 import { AuthContext } from 'context';
 import { useContext, useEffect } from 'react';
 import { useQuery } from 'react-query';
@@ -44,11 +44,14 @@ function Dashboard() {
         isLoaded={!isLoading}
         startColor="orange.100"
         endColor="orange.500"
-        className="my-4"
+        className="my-4 w-4/5"
       >
+        {/* TODO: Resolve Y `name` is undefined... */}
         {data?.map(({ _id: id, name, investors }) => (
           <Investment key={id} caption={name} investors={investors} />
         ))}
+
+        <Form />
       </Skeleton>
     </>
   );
