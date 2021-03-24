@@ -12,7 +12,8 @@ router.get("/", (_, res) => {
 
 /**
  * We use user's ✉️ to get all of the relevant records from MongoDB
- * @param{Object}
+ * @param {Request} req
+ * @param {string} req.body.email - email ID of the user
  * @returns {[Object]}
  */
 router.post("/", async ({ body: { email } }, res) => {
