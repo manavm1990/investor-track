@@ -1,5 +1,6 @@
 import { Box, Skeleton } from '@chakra-ui/react';
 import api from 'api';
+import { Investment } from 'components';
 import { AuthContext } from 'context';
 import { useContext, useEffect } from 'react';
 import { useQuery } from 'react-query';
@@ -43,9 +44,11 @@ function Dashboard() {
         isLoaded={!isLoading}
         startColor="orange.100"
         endColor="orange.500"
-        className="my-4 h-8 w-4/5"
+        className="my-4"
       >
-        <p>hello</p>
+        {data?.map(({ _id: id, name, investors }) => (
+          <Investment key={id} caption={name} investors={investors} />
+        ))}
       </Skeleton>
     </>
   );
