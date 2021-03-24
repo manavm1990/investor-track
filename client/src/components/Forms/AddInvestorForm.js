@@ -9,8 +9,12 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from '@chakra-ui/react';
+import { useQueryClient } from 'react-query';
 
 function AddInvestorForm() {
+  const queryClient = useQueryClient();
+  console.log(queryClient);
+
   const handleSubmit = event => {
     event.preventDefault();
 
