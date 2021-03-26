@@ -12,7 +12,7 @@ router.get("/", (_, res) => {
 });
 
 /**
- * We use user's ✉️ to get all of the relevant records from MongoDB
+ * We use user's ✉️ to get all of the records from MongoDB
  * @param {Request} req
  * @param {string} req.body.email - email ID of the user
  * @returns {[Object]} - MongoDB results
@@ -24,13 +24,9 @@ router.post("/", async ({ body: { email } } = {}, res) => {
       throw new Error("401 - Unauthorized!");
     }
     return res.json(await db.findInvestments(email));
-  } catch (error) {
-    if (error.name === "MongoError") {
-      return res.status(500).json({ error: error.message });
-    }
-
-    // Probably invalid data in the request
-    return res.status(400).json({ error: error.message });
+  } catch ({ message }) {
+    // Pull the code from the message - if there is one, or assume `500`
+    return res.status(400).json({ error: message });
   }
 });
 
