@@ -27,8 +27,9 @@ export default {
          * (https://docs.mongodb.com/manual/tutorial/query-arrays/#query-an-array-for-an-element)
          */
         .find(user === config.admin ? null : { "investors.email": user });
-      const results = await cursor.toArray();
-      return results;
+
+      // `await` is on receiver - no need here
+      return cursor.toArray();
     } catch (error) {
       throw new Error(error);
     }
@@ -53,10 +54,14 @@ export default {
    */
   addInvestor(investment, investor) {
     try {
-      return client
-        .db(db)
-        .collection(collection)
-        .updateOne({ name: investment }, { $push: { investors: investor } });
+      return (
+        client
+          .db(db)
+          .collection(collection)
+
+          // Update an investment that has a `name` of `investment` by pushing `investor`
+          .updateOne({ name: investment }, { $push: { investors: investor } })
+      );
     } catch (error) {
       throw new Error(error);
     }
