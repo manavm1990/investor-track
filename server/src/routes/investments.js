@@ -1,3 +1,4 @@
+import config from "config";
 import db from "db";
 import { Router } from "express";
 
@@ -16,14 +17,20 @@ router.get("/", (_, res) => {
  * @param {string} req.body.email - email ID of the user
  * @returns {[Object]} - MongoDB results
  */
-router.post("/", async ({ body: { email } }, res) => {
+router.post("/", async ({ body: { email } } = {}, res) => {
   try {
     // TODO: ⚠️ Verify identity via Firebase auth ID token JWT
-    const investments = await db.findInvestments(email);
-    return res.json(investments);
+    if (email !== config.admin) {
+      throw new Error("401 - Unauthorized!");
+    }
+    return res.json(await db.findInvestments(email));
   } catch (error) {
-    // TODO: Use `switch/case` to send back appropriate codes/messages
-    return res.status(401).json({ error: error.message });
+    if (error.name === "MongoError") {
+      return res.status(500).json({ error: error.message });
+    }
+
+    // Probably invalid data in the request
+    return res.status(400).json({ error: error.message });
   }
 });
 
@@ -42,17 +49,26 @@ router.post(
           // Passed in as `investmentName`, but needs to be `name` for db service method.
           name,
       },
-    },
+    } = {},
     res
   ) => {
     try {
       if (!name) {
-        throw new Error("Investment name is invalid or undefined.");
+        // `json` `end`s the response - no need for `res.end()`
+        res.status(400).json({ error: "Invalid investment name!" });
       }
-      // TODO: Check db results for an `"error"` 🔑 👇🏾
-      return res.json(await db.addInvestment(name));
+
+      const results = await db.addInvestment(name);
+
+      // 201 - Created
+      return res.status(201).json(results);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      if (error.name === "MongoError") {
+        return res.status(500).json({ error: error.message });
+      }
+
+      // Probably invalid data in the request
+      return res.status(400).json({ error: error.message });
     }
   }
 );
@@ -65,17 +81,22 @@ router.post(
  */
 router.post(
   "/investor",
-  async ({ body: { investmentName, newInvestor } }, res) => {
-    try {
-      // TODO: Double check for falsy values b4 sending to db service method 👆🏾
-      const results = await db.addInvestor(investmentName, newInvestor);
 
-      // If our results includes a 🔑 called "error"
-      if (Object.keys(results).includes("error")) {
-        throw new Error(results.error);
+  // Use default parameter empty objects to avoid `cannot...of 'undefined'` 💩
+  async ({ body: { investmentName, newInvestor = {} } = {} } = {}, res) => {
+    try {
+      if (!investmentName || !Object.entries(newInvestor).length) {
+        res
+          .status(400)
+          .json({ error: "Invalid investment name or new investor!" });
       }
-      return res.json(results);
+      return res.json(await db.addInvestor(investmentName, newInvestor));
     } catch (error) {
+      if (error.name === "MongoError") {
+        return res.status(500).json({ error: error.message });
+      }
+
+      // Probably invalid data in the request
       return res.status(400).json({ error: error.message });
     }
   }
