@@ -21,12 +21,13 @@ router.post("/", async ({ body: { email } } = {}, res) => {
   try {
     // TODO: ⚠️ Verify identity via Firebase auth ID token JWT
     if (email !== config.admin) {
-      throw new Error("401 - Unauthorized!");
+      res.status(401).json({ error: "401 - Unauthorized!" });
+      return;
     }
-    return res.json(await db.findInvestments(email));
-  } catch ({ message }) {
-    // Pull the code from the message - if there is one, or assume `500`
-    return res.status(400).json({ error: message });
+
+    res.json(await db.findInvestments(email));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -52,19 +53,20 @@ router.post(
       if (!name) {
         // `json` `end`s the response - no need for `res.end()`
         res.status(400).json({ error: "Invalid investment name!" });
+        return;
       }
 
       const results = await db.addInvestment(name);
 
       // 201 - Created
-      return res.status(201).json(results);
+      res.status(201).json(results);
     } catch (error) {
       if (error.name === "MongoError") {
-        return res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
       }
 
       // Probably invalid data in the request
-      return res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
   }
 );
@@ -81,19 +83,29 @@ router.post(
   // Use default parameter empty objects to avoid `cannot...of 'undefined'` 💩
   async ({ body: { investmentName, newInvestor = {} } = {} } = {}, res) => {
     try {
-      if (!investmentName || !Object.entries(newInvestor).length) {
+      if (
+        !investmentName ||
+        // Check for an empty object
+        !Object.entries(newInvestor).length
+      ) {
         res
           .status(400)
           .json({ error: "Invalid investment name or new investor!" });
+
+        /**
+         * Even though `json` closes out response,
+         * JS will keep going unless we use `return`
+         */
+        return;
       }
-      return res.json(await db.addInvestor(investmentName, newInvestor));
+      res.json(await db.addInvestor(investmentName, newInvestor));
     } catch (error) {
       if (error.name === "MongoError") {
-        return res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
       }
 
       // Probably invalid data in the request
-      return res.status(400).json({ error: error.message });
+      res.status(400).json({ error: error.message });
     }
   }
 );
