@@ -203,4 +203,49 @@ router.post(
   }
 );
 
+/**
+ * Update investor details
+ * @param {Request} req
+ * @param {string} req.headers.authorization - JWT
+ * @param {string} req.body.investorEmail - ✉️
+ * @param {string} req.body.payload - Updated details
+ * @returns {Object} - MongoDB results
+ */
+router.patch(
+  "/investor",
+
+  async (
+    {
+      headers: { authorization } = {},
+      body: { investorEmail, payload = {} } = {},
+    } = {},
+    res
+  ) => {
+    try {
+      if (!investorEmail) {
+        res.status(400).json({ error: "Invalid investor!" });
+        return;
+      }
+
+      // Only admin or logged in investor can do this one!
+      const decodedToken = await app.verifyIdToken(authorization);
+      const email = decodedToken?.email;
+
+      if (email !== config.admin && email !== investorEmail) {
+        res.status(401).json({ error: "401 - Unauthorized!" });
+        return;
+      }
+
+      res.json(await db.addInvestor(investorEmail, payload));
+    } catch (error) {
+      if (error.name === "MongoError") {
+        res.status(500).json({ error: error.message });
+      }
+
+      // Probably invalid data in the request
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
 export default router;
