@@ -1,7 +1,7 @@
 import { AuthContext } from 'context';
 import PropTypes from 'prop-types';
 import { useContext } from 'react';
-import { Redirect, Route } from 'react-router';
+import { Redirect, Route } from 'react-router-dom';
 
 function PrivateRoute({ children }) {
   const { loggedInUser } = useContext(AuthContext);
