@@ -54,12 +54,50 @@ export default {
   },
 
   /**
+   * Update an investment
+   * @param {investment} investment name
+   * @param {Object} payload
+   * @returns {Object}
+   */
+  updateInvestmentButNotInvestors(investment, payload) {
+    try {
+      return client
+        .db(db)
+        .collection(collection)
+        .updateOne({ name: investment }, { $set: payload });
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+
+  /**
    * Add an investor to an investment
    * @param {string} investment - `name`
    * @param {Object} investor
    * @returns {Object}
    */
   addInvestor(investment, investor) {
+    try {
+      return (
+        client
+          .db(db)
+          .collection(collection)
+
+          // Update an investment that has a `name` of `investment` by pushing `investor`
+          .updateOne({ name: investment }, { $push: { investors: investor } })
+      );
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+
+  /**
+   * Add an investor to an investment
+   * @param {string} investor - ✉️
+   * @param {Object} payload
+   * @returns {Object}
+   */
+  updateInvestor(investor, payload) {
     try {
       return (
         client
