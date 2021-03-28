@@ -149,9 +149,10 @@ router.patch(
 );
 
 /**
- * Add a new investor
+ * Add a new investor to an investment
  * @param {Request} req
- * @param {string} req.body.investor - name of the investment
+ * @param {string} req.body.investmentName - name of the investment
+ * @param {string} req.body.newInvestor - name of the investor
  * @returns {Object} - MongoDB results
  */
 router.post(
@@ -168,6 +169,24 @@ router.post(
         res
           .status(400)
           .json({ error: "Invalid investment name or new investor!" });
+
+        /**
+         * Even though `json` closes out response,
+         * JS will keep going unless we use `return`
+         */
+        return;
+      }
+      res.json(await db.addInvestorToInvestment(investmentName, newInvestor));
+    } catch (error) {
+      if (error.name === "MongoError") {
+        res.status(500).json({ error: error.message });
+      }
+
+      // Probably invalid data in the request
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
 
         /**
          * Even though `json` closes out response,
