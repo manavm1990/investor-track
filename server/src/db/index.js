@@ -35,6 +35,13 @@ export default {
     }
   },
 
+  // TODO: Consider updating these to use Mongo ids instead of names
+
+  /**
+   * Add a new investment
+   * @param {string} investment
+   * @returns {Object}
+   */
   addInvestment(investment) {
     try {
       return client
@@ -48,7 +55,7 @@ export default {
 
   /**
    * Add an investor to an investment
-   * @param {string} investment
+   * @param {string} investment - `name`
    * @param {Object} investor
    * @returns {Object}
    */
