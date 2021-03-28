@@ -9,8 +9,7 @@ import {
 } from '@chakra-ui/react';
 import api from 'api';
 import { AuthContext } from 'context';
-import { useContext, useEffect, useReducer } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useContext, useReducer } from 'react';
 
 // state, action (it's from the dispatcher)
 function reducer(state, { type, payload }) {
@@ -30,14 +29,7 @@ function reducer(state, { type, payload }) {
 
 function LoginRegistrationForm() {
   const [formState, dispatch] = useReducer(reducer, { mode: 'login' });
-  const history = useHistory();
-  const { loggedInUser, toggleUser } = useContext(AuthContext);
-
-  useEffect(() => {
-    if (!loggedInUser) {
-      history.push('/');
-    }
-  });
+  const { _, toggleUser } = useContext(AuthContext);
 
   const finishRegistration = async (fname, photo) => {
     try {
@@ -50,7 +42,7 @@ function LoginRegistrationForm() {
       currentUser
         .updateProfile({ displayName: fname, photoURL })
         .then(() => {
-          history.push('/dashboard');
+          toggleUser(currentUser);
         })
         .catch(error => {
           throw new Error(error.message);
@@ -79,9 +71,7 @@ function LoginRegistrationForm() {
       switch (innerText) {
         case 'No Account Yet?':
           dispatch({ type: 'activate-registration-mode' });
-
           break;
-
         case 'Forgot Password?':
           dispatch({ type: 'activate-forgotten-mode' });
           break;
@@ -93,7 +83,6 @@ function LoginRegistrationForm() {
 
   const handleSubmit = async function (event) {
     event.preventDefault();
-
     const submission = Object.fromEntries(new FormData(event.target));
 
     switch (formState.mode) {
@@ -106,7 +95,6 @@ function LoginRegistrationForm() {
 
           // Invoked by parent - controlled components pattern (uni-directional)
           toggleUser(user);
-          history.push('/dashboard');
         } catch (error) {
           dispatch({ type: 'update-info', payload: error.message });
         }
