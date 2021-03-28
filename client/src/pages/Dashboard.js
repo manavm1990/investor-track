@@ -2,25 +2,17 @@ import { Box, Skeleton } from '@chakra-ui/react';
 import api from 'api';
 import { Form, Investment } from 'components';
 import { AuthContext } from 'context';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useQuery } from 'react-query';
-import { useHistory } from 'react-router-dom';
 
 function Dashboard() {
   const { loggedInUser } = useContext(AuthContext);
-
-  const history = useHistory();
+  console.log(loggedInUser, loggedInUser.email, 'Dashboard');
 
   const fetchInvestments = async () => {
-    const results = await api.db.index({ email: loggedInUser?.email });
+    const results = await api.db.index({ email: loggedInUser.email });
     return results;
   };
-
-  useEffect(() => {
-    if (!loggedInUser) {
-      history.push('/');
-    }
-  }, [history, loggedInUser]);
 
   const { isLoading, isError, data, error } = useQuery(
     'investments',

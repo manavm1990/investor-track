@@ -1,12 +1,18 @@
 import { Box, ChakraProvider, extendTheme, Grid } from '@chakra-ui/react';
 import api from 'api';
+import { Private } from 'components/base';
 import { AuthContext } from 'context';
 import Layout from 'layout';
 import { DashboardPage, HomePage } from 'pages';
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom';
 import { Fonts } from 'theme';
 import './index.css';
 
@@ -45,11 +51,17 @@ function App() {
                 <Router>
                   <Switch>
                     <Route exact path="/">
-                      <HomePage />
+                      {loggedInUser ? (
+                        <Redirect to="/dashboard" />
+                      ) : (
+                        <HomePage />
+                      )}
                     </Route>
-                    <Route path="/dashboard">
+
+                    {/* 'Private' is an HOC that take children and props  */}
+                    <Private path="/dashboard">
                       <DashboardPage />
-                    </Route>
+                    </Private>
                   </Switch>
                 </Router>
               </Layout>
