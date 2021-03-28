@@ -6,8 +6,7 @@ const api = {
     async show(email, password) {
       try {
         if (email && password) {
-          const user = await auth.signInWithEmailAndPassword(email, password);
-          return user;
+          return auth.signInWithEmailAndPassword(email, password);
         }
 
         // If no email and password, just check for a current user
