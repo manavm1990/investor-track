@@ -10,12 +10,7 @@ function Dashboard() {
 
   const fetchInvestments = async () => {
     const results = await api.db.index({
-      email:
-        /**
-         * We won't get here until we have a loggedInUser with an ✉️ b/c of
-         * `enabled` below 👇🏾.
-         */
-        loggedInUser.email,
+      // Token will be checked on server to cross-reference admin ✉️
       token: await loggedInUser.getIdToken(),
     });
     return results;

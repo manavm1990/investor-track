@@ -27,26 +27,26 @@ router.get("/", (_, res) => {
 /**
  * Get all of the records from MongoDB.
  * @param {Request} req
- * @param {string} req.body.email - email ID of the user
  * @param {string} req.headers.authorization - jwt
  * @returns {[Object]} - MongoDB results
  */
-router.post(
-  "/",
-  async ({ headers: { authorization } = {}, body: { email } } = {}, res) => {
-    try {
-      const decodedToken = await app.verifyIdToken(authorization);
+router.post("/", async ({ headers: { authorization } } = {}, res) => {
+  try {
+    const decodedToken = await app.verifyIdToken(authorization);
 
-      if (!decodedToken?.uid || email !== config.admin) {
-        res.status(401).json({ error: "401 - Unauthorized!" });
-        return;
-      }
-      res.json(await db.findInvestments(email));
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+    // With OPTIONAL CHAINING, `email` may be `undefined` but no crash 🚗.
+    // (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
+    const email = decodedToken?.email;
+
+    if (email !== config.admin) {
+      res.status(401).json({ error: "401 - Unauthorized!" });
+      return;
     }
+    res.json(await db.findInvestments(email));
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-);
+});
 
 // TODO: Consider updating these to use Mongo ids instead of names
 
@@ -67,7 +67,6 @@ router.post(
         investmentName:
           // Passed in as `investmentName`, but needs to be `name` for db service method.
           name,
-        email,
       },
     } = {},
     res
@@ -82,7 +81,7 @@ router.post(
       // Only 'super admin' can do this one!
       const decodedToken = await app.verifyIdToken(authorization);
 
-      if (!decodedToken?.uid || email !== config.admin) {
+      if (decodedToken?.email !== config.admin) {
         res.status(401).json({ error: "401 - Unauthorized!" });
         return;
       }
@@ -116,7 +115,7 @@ router.patch(
   async (
     {
       headers: { authorization } = {},
-      body: { investmentName: name, email, payload },
+      body: { investmentName: name, payload },
     } = {},
     res
   ) => {
@@ -130,7 +129,7 @@ router.patch(
       // Only 'super admin' can do this one!
       const decodedToken = await app.verifyIdToken(authorization);
 
-      if (!decodedToken?.uid || email !== config.admin) {
+      if (decodedToken?.email !== config.admin) {
         res.status(401).json({ error: "401 - Unauthorized!" });
         return;
       }
@@ -159,7 +158,13 @@ router.post(
   "/investor",
 
   // Use default parameter empty objects to avoid `cannot...of 'undefined'` 💩
-  async ({ body: { investmentName, newInvestor = {} } = {} } = {}, res) => {
+  async (
+    {
+      headers: { authorization } = {},
+      body: { investmentName, newInvestor = {} } = {},
+    } = {},
+    res
+  ) => {
     try {
       if (
         !investmentName ||
@@ -176,25 +181,17 @@ router.post(
          */
         return;
       }
-      res.json(await db.addInvestorToInvestment(investmentName, newInvestor));
-    } catch (error) {
-      if (error.name === "MongoError") {
-        res.status(500).json({ error: error.message });
-      }
 
-      // Probably invalid data in the request
-      res.status(400).json({ error: error.message });
-    }
-  }
-);
+      // Only the admin can do this!
+      const decodedToken = await app.verifyIdToken(authorization);
 
-        /**
-         * Even though `json` closes out response,
-         * JS will keep going unless we use `return`
-         */
+      // We can take the ✉️ directly
+      if (decodedToken?.email !== config.admin) {
+        res.status(401).json({ error: "401 - Unauthorized!" });
         return;
       }
-      res.json(await db.addInvestor(investmentName, newInvestor));
+
+      res.json(await db.addInvestorToInvestment(investmentName, newInvestor));
     } catch (error) {
       if (error.name === "MongoError") {
         res.status(500).json({ error: error.message });

@@ -69,13 +69,11 @@ const api = {
      * @param {string} user.token - JWT
      * @returns {[Object]}
      */
-    async index({ email, token }) {
+    async index({ token }) {
       const resp = await ky
-        .post(
-          `http://localhost:8080/investments`,
-          // Send user JWT
-          { json: { email }, headers: { Authorization: token } }
-        )
+        .post(`http://localhost:8080/investments`, {
+          headers: { Authorization: token },
+        })
         .json();
 
       return resp;
