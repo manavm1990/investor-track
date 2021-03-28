@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import { useContext } from 'react';
 import { Redirect, Route } from 'react-router';
 
-function PrivateRoute({ children, ...props }) {
+function PrivateRoute({ children }) {
   const { loggedInUser } = useContext(AuthContext);
 
   return (
     <Route
-      {...props}
       /**
        * ...render allows us to re-check
        *  if the user is authenticated every time the Route matches.
