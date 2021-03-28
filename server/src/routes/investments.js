@@ -48,10 +48,14 @@ router.post(
   }
 );
 
+// TODO: Consider updating these to use Mongo ids instead of names
+
 /**
  * Add a new investment
  * @param {Request} req
  * @param {string} req.body.investmentName - name of the investment
+ * @param {string} req.body.email - ✉️
+ * @param {string} req.headers.authorization - jwt
  * @returns {Object} - MongoDB results
  */
 router.post(
@@ -88,6 +92,15 @@ router.post(
   }
 );
 
+/**
+ * Add a new investment
+ * @param {Request} req
+ * @param {string} req.body.investmentName - name of the investment
+ * @param {string} req.body.email - ✉️
+ * @param {Object} req.body.payload - Updates for investment
+ * @param {string} req.headers.authorization - jwt
+ * @returns {Object} - MongoDB results
+ */
 /**
  * Add a new investor
  * @param {Request} req
