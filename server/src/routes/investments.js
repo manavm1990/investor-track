@@ -62,10 +62,12 @@ router.post(
   "/investment",
   async (
     {
+      headers: { authorization } = {},
       body: {
         investmentName:
           // Passed in as `investmentName`, but needs to be `name` for db service method.
           name,
+        email,
       },
     } = {},
     res
@@ -74,6 +76,14 @@ router.post(
       if (!name) {
         // `json` `end`s the response - no need for `res.end()`
         res.status(400).json({ error: "Invalid investment name!" });
+        return;
+      }
+
+      // Only 'super admin' can do this one!
+      const decodedToken = await app.verifyIdToken(authorization);
+
+      if (!decodedToken?.uid || email !== config.admin) {
+        res.status(401).json({ error: "401 - Unauthorized!" });
         return;
       }
 
@@ -101,6 +111,43 @@ router.post(
  * @param {string} req.headers.authorization - jwt
  * @returns {Object} - MongoDB results
  */
+router.patch(
+  "/investment",
+  async (
+    {
+      headers: { authorization } = {},
+      body: { investmentName: name, email, payload },
+    } = {},
+    res
+  ) => {
+    try {
+      if (!name) {
+        // `json` `end`s the response - no need for `res.end()`
+        res.status(400).json({ error: "Invalid investment!" });
+        return;
+      }
+
+      // Only 'super admin' can do this one!
+      const decodedToken = await app.verifyIdToken(authorization);
+
+      if (!decodedToken?.uid || email !== config.admin) {
+        res.status(401).json({ error: "401 - Unauthorized!" });
+        return;
+      }
+
+      const results = db.updateInvestmentButNotInvestors(name, payload);
+      res.status(201).json(results);
+    } catch (error) {
+      if (error.name === "MongoError") {
+        res.status(500).json({ error: error.message });
+      }
+
+      // Probably invalid data in the request
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
 /**
  * Add a new investor
  * @param {Request} req
