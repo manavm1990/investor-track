@@ -25,9 +25,7 @@ function App() {
   useEffect(() => {
     (async () => {
       const user = await api.auth.show();
-      if (user) {
-        setLoggedInUser(user);
-      }
+      setLoggedInUser(() => user);
     })();
   });
 
