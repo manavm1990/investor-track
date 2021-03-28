@@ -10,13 +10,27 @@ function Dashboard() {
   console.log(loggedInUser, loggedInUser.email, 'Dashboard');
 
   const fetchInvestments = async () => {
-    const results = await api.db.index({ email: loggedInUser.email });
+    const results = await api.db.index({
+      email:
+        /**
+         * We won't get here until we have a loggedInUser with an ✉️ b/c of
+         * `enabled` below 👇🏾.
+         */
+
+        loggedInUser.email,
+    });
     return results;
   };
 
   const { isLoading, isError, data, error } = useQuery(
     'investments',
-    fetchInvestments
+    fetchInvestments,
+
+    /**
+     * Developer's Note 🎵: ⚠️ It IS possible to have a `loggedInUser` and
+     * no ✉️ b/c of timing of Auth process
+     */
+    { enabled: Boolean(loggedInUser?.email) }
   );
 
   if (isError) {
