@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/manavm1990/node-starter#readme",
   "devDependencies": {
+    "@firebase/app": "^0.6.17",
     "aws4": "^1.11.0",
     "eslint": "^7.22.0",
     "eslint-config-airbnb-base": "^14.2.0",
@@ -51,6 +52,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "firebase-admin": "^9.5.0",
     "mongodb": "^3.6.5"
   }
 }

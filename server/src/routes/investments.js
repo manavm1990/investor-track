@@ -1,8 +1,21 @@
 import config from "config";
 import db from "db";
 import { Router } from "express";
+import * as admin from "firebase-admin";
+import path from "path";
 
 const router = new Router();
+
+const app = admin
+  .initializeApp({
+    credential: admin.credential.cert(
+      path.join(
+        __dirname,
+        "investtrack-8953c-firebase-adminsdk-wq40m-f82fde5e6e.json"
+      )
+    ),
+  })
+  .auth();
 
 /**
  * Handles any GET requests to "/investments/"
@@ -12,24 +25,27 @@ router.get("/", (_, res) => {
 });
 
 /**
- * We use user's ✉️ to get all of the records from MongoDB
+ * Get all of the records from MongoDB.
  * @param {Request} req
  * @param {string} req.body.email - email ID of the user
  * @returns {[Object]} - MongoDB results
  */
-router.post("/", async ({ body: { email } } = {}, res) => {
-  try {
-    // TODO: ⚠️ Verify identity via Firebase auth ID token JWT
-    if (email !== config.admin) {
-      res.status(401).json({ error: "401 - Unauthorized!" });
-      return;
-    }
+router.post(
+  "/",
+  async ({ headers: { authorization } = {}, body: { email } } = {}, res) => {
+    try {
+      const decodedToken = await app.verifyIdToken(authorization);
 
-    res.json(await db.findInvestments(email));
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+      if (!decodedToken?.uid || email !== config.admin) {
+        res.status(401).json({ error: "401 - Unauthorized!" });
+        return;
+      }
+      res.json(await db.findInvestments(email));
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
-});
+);
 
 /**
  * Add a new investment

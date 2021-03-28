@@ -64,15 +64,17 @@ const api = {
   db: {
     /**
      * Get all investments for either a user or for everyone if 'admin.'
-     * @param {Object} user - user's ✉️
+     * @param {Object} user - the current user
+     * @param {string} user.email
+     * @param {string} user.token - JWT
      * @returns {[Object]}
      */
-    async index(user) {
+    async index({ email, token }) {
       const resp = await ky
         .post(
           `http://localhost:8080/investments`,
-          // Send user ✉️ JSON as request body
-          { json: user }
+          // Send user JWT
+          { json: { email }, headers: { Authorization: token } }
         )
         .json();
 

@@ -16,6 +16,7 @@ function Dashboard() {
          * `enabled` below 👇🏾.
          */
         loggedInUser.email,
+      token: await loggedInUser.getIdToken(),
     });
     return results;
   };
