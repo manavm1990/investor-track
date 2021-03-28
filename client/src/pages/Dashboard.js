@@ -50,7 +50,6 @@ function Dashboard() {
         endColor="orange.500"
         className="my-4 w-4/5"
       >
-        {/* TODO: Resolve Y `name` is undefined... */}
         {data?.map(({ _id: id, name, investors }) => (
           <Investment key={id} caption={name} investors={investors} />
         ))}
