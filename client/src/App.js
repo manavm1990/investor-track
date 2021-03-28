@@ -58,7 +58,7 @@ function App() {
                       )}
                     </Route>
 
-                    {/* 'Private' is an HOC that take children and props  */}
+                    {/* 'Private' is an HOC that takes children and props  */}
                     <Private path="/dashboard">
                       <DashboardPage />
                     </Private>
