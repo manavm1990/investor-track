@@ -28,6 +28,7 @@ router.get("/", (_, res) => {
  * Get all of the records from MongoDB.
  * @param {Request} req
  * @param {string} req.body.email - email ID of the user
+ * @param {string} req.headers.authorization - jwt
  * @returns {[Object]} - MongoDB results
  */
 router.post(
