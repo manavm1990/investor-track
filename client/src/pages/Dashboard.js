@@ -7,7 +7,6 @@ import { useQuery } from 'react-query';
 
 function Dashboard() {
   const { loggedInUser } = useContext(AuthContext);
-  console.log(loggedInUser, loggedInUser.email, 'Dashboard');
 
   const fetchInvestments = async () => {
     const results = await api.db.index({
@@ -16,7 +15,6 @@ function Dashboard() {
          * We won't get here until we have a loggedInUser with an ✉️ b/c of
          * `enabled` below 👇🏾.
          */
-
         loggedInUser.email,
     });
     return results;

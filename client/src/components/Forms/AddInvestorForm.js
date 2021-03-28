@@ -13,14 +13,11 @@ import { useQueryClient } from 'react-query';
 
 function AddInvestorForm() {
   const queryClient = useQueryClient();
-  console.log(queryClient);
 
   const handleSubmit = event => {
     event.preventDefault();
 
     const newInvestor = Object.fromEntries(new FormData(event.target));
-
-    console.log(newInvestor, 'Please');
   };
 
   // ⚠️ Be sure that all `name` attributes match 🔑s for MongoDB
