@@ -1,3 +1,5 @@
+// TODO: Break this route up (maybe `investments`/`investor`)
+
 import config from "config";
 import db from "db";
 import { Router } from "express";
@@ -24,42 +26,45 @@ router.get("/", (_, res) => {
   res.send("<h1>Hello from Investments GET Router</h1>");
 });
 
-/**
- * Get all of the records from MongoDB.
- * @param {Request} req
- * @param {string} req.headers.authorization - jwt
- * @returns {[Object]} - MongoDB results
- */
-router.post("/", async ({ headers: { authorization } } = {}, res) => {
-  try {
-    const decodedToken = await app.verifyIdToken(authorization);
+router.post(
+  "/",
 
-    // With OPTIONAL CHAINING, `email` may be `undefined` but no crash 🚗.
-    // (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
-    const email = decodedToken?.email;
+  /**
+   * Get all of the records from MongoDB.
+   * @param {Request} req
+   * @param {string} req.headers.authorization - jwt
+   */
+  async ({ headers: { authorization } } = {}, res) => {
+    try {
+      const decodedToken = await app.verifyIdToken(authorization);
 
-    if (email !== config.admin) {
-      res.status(401).json({ error: "401 - Unauthorized!" });
-      return;
+      // With OPTIONAL CHAINING, `email` may be `undefined` but no crash 🚗.
+      // (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
+      const email = decodedToken?.email;
+
+      if (email !== config.admin) {
+        res.status(401).json({ error: "401 - Unauthorized!" });
+        return;
+      }
+      res.json(await db.findInvestments(email));
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
-    res.json(await db.findInvestments(email));
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
-});
+);
 
 // TODO: Consider updating these to use Mongo ids instead of names
 
-/**
- * Add a new investment
- * @param {Request} req
- * @param {string} req.body.investmentName - name of the investment
- * @param {string} req.body.email - ✉️
- * @param {string} req.headers.authorization - jwt
- * @returns {Object} - MongoDB results
- */
 router.post(
   "/investment",
+
+  /**
+   * Add a new investment
+   * @param {Request} req
+   * @param {string} req.body.investmentName - name of the investment
+   * @param {string} req.body.email - ✉️
+   * @param {string} req.headers.authorization - jwt
+   */
   async (
     {
       headers: { authorization } = {},
@@ -101,17 +106,17 @@ router.post(
   }
 );
 
-/**
- * Add a new investment
- * @param {Request} req
- * @param {string} req.body.investmentName - name of the investment
- * @param {string} req.body.email - ✉️
- * @param {Object} req.body.payload - Updates for investment
- * @param {string} req.headers.authorization - jwt
- * @returns {Object} - MongoDB results
- */
 router.patch(
   "/investment",
+
+  /**
+   * Add a new investment
+   * @param {Request} req
+   * @param {string} req.body.investmentName - name of the investment
+   * @param {string} req.body.email - ✉️
+   * @param {Object} req.body.payload - Updates for investment
+   * @param {string} req.headers.authorization - jwt
+   */
   async (
     {
       headers: { authorization } = {},
@@ -147,17 +152,15 @@ router.patch(
   }
 );
 
-/**
- * Add a new investor to an investment
- * @param {Request} req
- * @param {string} req.body.investmentName - name of the investment
- * @param {string} req.body.newInvestor - name of the investor
- * @returns {Object} - MongoDB results
- */
 router.post(
   "/investor",
 
-  // Use default parameter empty objects to avoid `cannot...of 'undefined'` 💩
+  /**
+   * Add a new investor to an investment
+   * @param {Request} req
+   * @param {string} req.body.investmentName - name of the investment
+   * @param {string} req.body.newInvestor - name of the investor
+   */
   async (
     {
       headers: { authorization } = {},
@@ -203,16 +206,16 @@ router.post(
   }
 );
 
-/**
- * Update investor details
- * @param {Request} req
- * @param {string} req.headers.authorization - JWT
- * @param {string} req.body.investorEmail - ✉️
- * @param {string} req.body.payload - Updated details
- * @returns {Object} - MongoDB results
- */
 router.patch(
   "/investor",
+
+  /**
+   * Update investor details
+   * @param {Request} req
+   * @param {string} req.headers.authorization - JWT
+   * @param {string} req.body.investorEmail - ✉️
+   * @param {string} req.body.payload - Updated details
+   */
   async (
     { headers: { authorization } = {}, body: { investorEmail, payload } } = {},
     res
