@@ -35,6 +35,17 @@ export default {
     }
   },
 
+  async findInvestor(investor) {
+    try {
+      return client
+        .db(db)
+        .collection(collection)
+        .findOne({ "investors.email": investor });
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+
   // TODO: Consider updating these to use Mongo ids instead of names
 
   /**
@@ -76,7 +87,7 @@ export default {
    * @param {Object} investor
    * @returns {Object}
    */
-  addInvestor(investment, investor) {
+  addInvestorToInvestment(investment, investor) {
     try {
       return (
         client
@@ -94,19 +105,24 @@ export default {
   /**
    * Add an investor to an investment
    * @param {string} investor - ✉️
-   * @param {Object} payload
+   * @param {Object} payload - existing and new information from request
    * @returns {Object}
    */
-  updateInvestor(investor, payload) {
+  updateInvestorInfo(investor, payload) {
     try {
-      return (
-        client
-          .db(db)
-          .collection(collection)
-
-          // Update an investment that has a `name` of `investment` by pushing `investor`
-          .updateOne({ name: investment }, { $push: { investors: investor } })
-      );
+      return client
+        .db(db)
+        .collection(collection)
+        .updateMany(
+          // 'find' all matching investments
+          { "investors.email": investor },
+          {
+            $set: {
+              // `$` represents the index of the correct item in the array
+              "investors.$": payload,
+            },
+          }
+        );
     } catch (error) {
       throw new Error(error);
     }
