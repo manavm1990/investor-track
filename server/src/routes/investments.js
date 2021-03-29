@@ -108,10 +108,9 @@ router.patch(
   "/investment",
 
   /**
-   * Add a new investment
+   * Update values in an investment
    * @param {Request} req
    * @param {string} req.body.investmentName - name of the investment
-   * @param {string} req.body.email - ✉️
    * @param {Object} req.body.payload - Updates for investment
    * @param {string} req.headers.authorization - jwt
    */
