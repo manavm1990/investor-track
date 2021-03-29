@@ -19,9 +19,6 @@ const authAdmin = admin
   })
   .auth();
 
-/**
- * Handles any GET requests to "/investments/"
- */
 router.get("/", (_, res) => {
   res.send("<h1>Hello from Investments GET Router</h1>");
 });
@@ -55,6 +52,7 @@ router.post(
 
 // TODO: Consider updating these to use Mongo ids instead of names
 
+// TODO: Double check for duplicate investment names b4 adding!
 router.post(
   "/investment",
 
