@@ -89,10 +89,8 @@ router.post(
         return;
       }
 
-      const results = await db.addInvestment(name);
-
       // 201 - Created
-      res.status(201).json(results);
+      res.status(201).json(await db.addInvestment(name));
     } catch (error) {
       if (error.name === "MongoError") {
         res.status(500).json({ error: error.message });
