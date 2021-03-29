@@ -213,12 +213,8 @@ router.post(
  */
 router.patch(
   "/investor",
-
   async (
-    {
-      headers: { authorization } = {},
-      body: { investorEmail, payload = {} } = {},
-    } = {},
+    { headers: { authorization } = {}, body: { investorEmail, payload } } = {},
     res
   ) => {
     try {
@@ -229,14 +225,39 @@ router.patch(
 
       // Only admin or logged in investor can do this one!
       const decodedToken = await app.verifyIdToken(authorization);
-      const email = decodedToken?.email;
+      const loggedInEmail = decodedToken?.email;
 
-      if (email !== config.admin && email !== investorEmail) {
+      if (loggedInEmail !== config.admin && loggedInEmail !== investorEmail) {
         res.status(401).json({ error: "401 - Unauthorized!" });
         return;
       }
 
-      res.json(await db.addInvestor(investorEmail, payload));
+      // Only admin can update `investmentAmt`!
+      if (loggedInEmail !== config.admin) {
+        res.status(401).json({
+          error:
+            "401 - You may not change your investment amount. Only admin can do that.",
+        });
+        return;
+      }
+
+      const investmentsWithInvestorEmail = await db.findInvestor(investorEmail);
+
+      // Get the existing document info to merge with our payload
+      const currentInvestor = investmentsWithInvestorEmail.investors
+        // Array - find (not MongoDb)
+        .find(({ email }) => email === investorEmail);
+
+      // Get all of the fields for investor
+      const fullPayload = {
+        // Our new `payload` info will overwrite any matching existing 🔑s
+        ...currentInvestor,
+        ...payload,
+      };
+
+      res
+        .status(201)
+        .json(await db.updateInvestorInfo(investorEmail, fullPayload));
     } catch (error) {
       if (error.name === "MongoError") {
         res.status(500).json({ error: error.message });
