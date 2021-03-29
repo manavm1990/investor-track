@@ -8,7 +8,7 @@ import path from "path";
 
 const router = new Router();
 
-const app = admin
+const authAdmin = admin
   .initializeApp({
     credential: admin.credential.cert(
       path.join(
@@ -36,7 +36,7 @@ router.post(
    */
   async ({ headers: { authorization } } = {}, res) => {
     try {
-      const decodedToken = await app.verifyIdToken(authorization);
+      const decodedToken = await authAdmin.verifyIdToken(authorization);
 
       // With OPTIONAL CHAINING, `email` may be `undefined` but no crash 🚗.
       // (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining)
@@ -84,7 +84,7 @@ router.post(
       }
 
       // Only 'super admin' can do this one!
-      const decodedToken = await app.verifyIdToken(authorization);
+      const decodedToken = await authAdmin.verifyIdToken(authorization);
 
       if (decodedToken?.email !== config.admin) {
         res.status(401).json({ error: "401 - Unauthorized!" });
@@ -132,7 +132,7 @@ router.patch(
       }
 
       // Only 'super admin' can do this one!
-      const decodedToken = await app.verifyIdToken(authorization);
+      const decodedToken = await authAdmin.verifyIdToken(authorization);
 
       if (decodedToken?.email !== config.admin) {
         res.status(401).json({ error: "401 - Unauthorized!" });
@@ -186,7 +186,7 @@ router.post(
       }
 
       // Only the admin can do this!
-      const decodedToken = await app.verifyIdToken(authorization);
+      const decodedToken = await authAdmin.verifyIdToken(authorization);
 
       // We can take the ✉️ directly
       if (decodedToken?.email !== config.admin) {
@@ -227,7 +227,7 @@ router.patch(
       }
 
       // Only admin or logged in investor can do this one!
-      const decodedToken = await app.verifyIdToken(authorization);
+      const decodedToken = await authAdmin.verifyIdToken(authorization);
       const loggedInEmail = decodedToken?.email;
 
       if (loggedInEmail !== config.admin && loggedInEmail !== investorEmail) {
@@ -287,7 +287,7 @@ router.delete(
   ) => {
     try {
       // Only admin can delete an investment
-      const decodedToken = await app.verifyIdToken(authorization);
+      const decodedToken = await authAdmin.verifyIdToken(authorization);
 
       // We can take the ✉️ directly
       if (decodedToken?.email !== config.admin) {
