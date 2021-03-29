@@ -127,4 +127,15 @@ export default {
       throw new Error(error);
     }
   },
+
+  deleteInvestment(investment) {
+    try {
+      return client
+        .db(db)
+        .collection(collection)
+        .deleteOne({ name: investment });
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
 };

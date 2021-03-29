@@ -272,4 +272,41 @@ router.patch(
   }
 );
 
+router.delete(
+  "/investment",
+
+  /**
+   * 🔥 investment
+   * @param {Request} req
+   * @param {string} req.headers.authorization - JWT
+   * @param {string} req.body.investmentName - name of investment
+   */
+  async (
+    { headers: { authorization } = {}, body: { investmentName } } = {},
+    res
+  ) => {
+    try {
+      // Only admin can delete an investment
+      const decodedToken = await app.verifyIdToken(authorization);
+
+      // We can take the ✉️ directly
+      if (decodedToken?.email !== config.admin) {
+        res.status(401).json({ error: "401 - Unauthorized!" });
+        return;
+      }
+
+      res.status(202).json(await db.deleteInvestment(investmentName));
+    } catch (error) {
+      if (error.name === "MongoError") {
+        res.status(500).json({ error: error.message });
+      }
+
+      // Probably invalid data in the request
+      res.status(400).json({ error: error.message });
+    }
+  }
+);
+
+// TODO: 🔥 Investor
+
 export default router;
