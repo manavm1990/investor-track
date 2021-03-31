@@ -8,16 +8,20 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  useToast,
 } from '@chakra-ui/react';
 import api from 'api';
 import { AuthContext } from 'context';
 import PropTypes from 'prop-types';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 function AddInvestorForm({ name }) {
   const { loggedInUser } = useContext(AuthContext);
+  const formEl = useRef(null);
+
   const queryClient = useQueryClient();
+  const toast = useToast();
 
   const addInvestor = useMutation(
     async (newInvestor, investmentName) =>
@@ -28,8 +32,24 @@ function AddInvestorForm({ name }) {
         path: 'investments/investor',
       }),
     {
-      onSuccess: () => queryClient.invalidateQueries('investments'),
+      onSuccess: ({
+        investmentName: updatedInvestmentName,
+        scrubbedInvestor: updatedInvestor,
+      } = {}) => {
+        queryClient.invalidateQueries('investments');
+        toast({
+          title: `Added ${updatedInvestor.fname} ${updatedInvestor.lname} to ${updatedInvestmentName}`,
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        });
+
+        // Reset form via ref
+        formEl.current.reset();
+      },
     }
+
+    // TODO: 🥅 (https://react-query.tanstack.com/guides/mutations#mutation-side-effects)
   );
 
   const handleSubmit = event => {
@@ -41,7 +61,7 @@ function AddInvestorForm({ name }) {
 
   // ⚠️ Be sure that all `name` attributes match 🔑s for MongoDB
   return (
-    <form className="mt-4" onSubmit={handleSubmit}>
+    <form className="mt-4" onSubmit={handleSubmit} ref={formEl}>
       <h4 className="font-semibold text-lg">Add Investor to {name}</h4>
       <FormControl className="my-2" id="email">
         <FormLabel>Email address</FormLabel>
@@ -60,6 +80,8 @@ function AddInvestorForm({ name }) {
 
       <FormControl className="my-2" id="investment-amount">
         <FormLabel>Investment Amount</FormLabel>
+
+        {/* TODO: 🐛 Not resetting! */}
         <NumberInput min={10}>
           <NumberInputField name="investmentAmt" />
           <NumberInputStepper>
