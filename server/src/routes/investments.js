@@ -195,9 +195,19 @@ router.post(
         return;
       }
 
-      res.json(
-        await db.addInvestorToInvestment(investmentName, scrubbedInvestor)
-      );
+      const {
+        result: { n: numOfUpdates },
+      } = await db.addInvestorToInvestment(investmentName, scrubbedInvestor);
+
+      if (numOfUpdates === 1) {
+        res.json({ investmentName, scrubbedInvestor });
+        return;
+      }
+
+      res.status(400).json({
+        error:
+          "No documents updated. Maybe that investment name doesn't exist?",
+      });
     } catch (error) {
       if (error.name === "MongoError") {
         res.status(500).json({ error: error.message });
