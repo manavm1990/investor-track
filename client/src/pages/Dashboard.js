@@ -66,10 +66,7 @@ function Dashboard() {
               </AccordionButton>
               <AccordionPanel>
                 <Table investors={investors} />
-                <h4 className="font-semibold text-lg">
-                  Add Investor to {name}
-                </h4>
-                <Form />
+                <Form name={name} />
               </AccordionPanel>
             </AccordionItem>
           ))}

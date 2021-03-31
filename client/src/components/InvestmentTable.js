@@ -1,10 +1,9 @@
-import { Table, TableCaption, Tbody, Td, Tr } from '@chakra-ui/react';
+import { Table, Tbody, Td, Tr } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 
-function InvestmentTable({ name, investors }) {
+function InvestmentTable({ investors }) {
   return (
     <Table variant="simple">
-      <TableCaption>{name}</TableCaption>
       <Tbody>
         {investors.map(({ email, fname, lname, investmentAmt }) => (
           <Tr key={email}>
@@ -19,7 +18,6 @@ function InvestmentTable({ name, investors }) {
 }
 
 InvestmentTable.propTypes = {
-  name: PropTypes.string.isRequired,
   investors: PropTypes.arrayOf(
     PropTypes.shape({
       email: PropTypes.string.isRequired,

@@ -22,7 +22,8 @@ function AddInvestorForm() {
 
   // ⚠️ Be sure that all `name` attributes match 🔑s for MongoDB
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="mt-4" onSubmit={handleSubmit}>
+      <h4 className="font-semibold text-lg">Add Investor to {name}</h4>
       <FormControl className="my-2" id="email">
         <FormLabel>Email address</FormLabel>
         <Input type="email" name="email" />
