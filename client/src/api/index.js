@@ -1,6 +1,9 @@
 import ky from 'ky';
 import auth from './auth';
 
+const dbBaseURL = 'http://localhost:8080';
+const dbBasePath = 'investments';
+
 const api = {
   auth: {
     async show(email, password) {
@@ -65,14 +68,39 @@ const api = {
     /**
      * Get all investments for either a user or for everyone if 'admin.'
      * @param {Object} user - the current user
-     * @param {string} user.email
      * @param {string} user.token - JWT
+     * @param {string} path - 👆🏾
      * @returns {[Object]}
      */
-    async index({ token }) {
+    async index({ token }, path = dbBasePath) {
       const resp = await ky
-        .post(`http://localhost:8080/investments`, {
+        .post(`${dbBaseURL}/${path}`, {
           headers: { Authorization: token },
+        })
+        .json();
+
+      return resp;
+    },
+
+    /**
+     * Create a new investment or add an investor
+     * @param {Object} args
+     * @param {string} args.token - JWT
+     * @param {Object} args.newInvestor
+     * @param {string} args.investmentName
+     * @param {string} path - 👆🏾
+     * @returns {Object}
+     */
+    async create({
+      token,
+      newInvestor,
+      investmentName,
+      path = dbBasePath,
+    } = {}) {
+      const resp = await ky
+        .post(`${dbBaseURL}/${path}`, {
+          headers: { Authorization: token },
+          json: { newInvestor, investmentName },
         })
         .json();
 

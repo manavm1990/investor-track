@@ -9,15 +9,29 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from '@chakra-ui/react';
-import { useQueryClient } from 'react-query';
+import api from 'api';
+import { AuthContext } from 'context';
+import PropTypes from 'prop-types';
+import { useContext } from 'react';
+import { useMutation } from 'react-query';
 
-function AddInvestorForm() {
-  const queryClient = useQueryClient();
+function AddInvestorForm({ name }) {
+  const { loggedInUser } = useContext(AuthContext);
+
+  const addInvestor = useMutation(async (newInvestor, investmentName) =>
+    api.db.create({
+      token: await loggedInUser.getIdToken(),
+      newInvestor,
+      investmentName: name,
+      path: 'investments/investor',
+    })
+  );
 
   const handleSubmit = event => {
     event.preventDefault();
 
     const newInvestor = Object.fromEntries(new FormData(event.target));
+    addInvestor.mutate(newInvestor, name);
   };
 
   // ⚠️ Be sure that all `name` attributes match 🔑s for MongoDB
@@ -57,5 +71,7 @@ function AddInvestorForm() {
     </form>
   );
 }
+
+AddInvestorForm.propTypes = { name: PropTypes.string.isRequired };
 
 export default AddInvestorForm;
