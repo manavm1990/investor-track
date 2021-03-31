@@ -9,7 +9,7 @@ import {
   Skeleton,
 } from '@chakra-ui/react';
 import api from 'api';
-import { Form, Investment } from 'components';
+import { Form, Table } from 'components';
 import { AuthContext } from 'context';
 import { useContext } from 'react';
 import { useQuery } from 'react-query';
@@ -65,7 +65,7 @@ function Dashboard() {
                 </h3>
               </AccordionButton>
               <AccordionPanel>
-                <Investment investors={investors} />
+                <Table investors={investors} />
                 <h4 className="font-semibold text-lg">
                   Add Investor to {name}
                 </h4>
