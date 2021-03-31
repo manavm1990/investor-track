@@ -166,6 +166,10 @@ router.post(
     res
   ) => {
     try {
+      const scrubbedInvestor = {
+        ...newInvestor,
+        ...{ investmentAmt: Number(newInvestor.investmentAmt) },
+      };
       if (
         !investmentName ||
         // Check for an empty object
@@ -191,7 +195,9 @@ router.post(
         return;
       }
 
-      res.json(await db.addInvestorToInvestment(investmentName, newInvestor));
+      res.json(
+        await db.addInvestorToInvestment(investmentName, scrubbedInvestor)
+      );
     } catch (error) {
       if (error.name === "MongoError") {
         res.status(500).json({ error: error.message });
