@@ -22,7 +22,7 @@ const Header = () => {
 
   return (
     <header className="flex items-center">
-      <Heading fontSize="2xl" className="mr-auto pl-2 text-green-500">
+      <Heading as="h1" fontSize="2xl" className="mr-auto pl-2 text-green-500">
         InvestTrack
       </Heading>
       {loggedInUser ? (
