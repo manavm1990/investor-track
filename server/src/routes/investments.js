@@ -52,8 +52,9 @@ router.post(
 );
 
 // TODO: Consider updating these to use Mongo ids instead of names
-
 // TODO: Double check for duplicate investment names b4 adding!
+// TODO: Verify if docs were updated or not!
+
 router.post(
   "/investment",
 
