@@ -1,4 +1,5 @@
 // TODO: Break this route up (maybe `investments`/`investor`)
+// TODO: Routes are getting heavy - use `services` pattern
 
 import config from "config";
 import db from "db";
