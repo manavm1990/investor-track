@@ -13,18 +13,23 @@ import api from 'api';
 import { AuthContext } from 'context';
 import PropTypes from 'prop-types';
 import { useContext } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 
 function AddInvestorForm({ name }) {
   const { loggedInUser } = useContext(AuthContext);
+  const queryClient = useQueryClient();
 
-  const addInvestor = useMutation(async (newInvestor, investmentName) =>
-    api.db.create({
-      token: await loggedInUser.getIdToken(),
-      newInvestor,
-      investmentName: name,
-      path: 'investments/investor',
-    })
+  const addInvestor = useMutation(
+    async (newInvestor, investmentName) =>
+      api.db.create({
+        token: await loggedInUser.getIdToken(),
+        newInvestor,
+        investmentName: name,
+        path: 'investments/investor',
+      }),
+    {
+      onSuccess: () => queryClient.invalidateQueries('investments'),
+    }
   );
 
   const handleSubmit = event => {
