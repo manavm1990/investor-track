@@ -161,7 +161,7 @@ router.post(
   async (
     {
       headers: { authorization } = {},
-      body: { investmentName, newInvestor = {} } = {},
+      body: { investmentName, newInvestor } = {},
     } = {},
     res
   ) => {
