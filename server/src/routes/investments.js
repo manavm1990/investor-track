@@ -200,6 +200,7 @@ router.post(
       } = await db.addInvestorToInvestment(investmentName, scrubbedInvestor);
 
       if (numOfUpdates === 1) {
+        // TODO: Generate and send an ✉️.
         res.json({ investmentName, scrubbedInvestor });
         return;
       }
